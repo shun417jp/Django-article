@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>記事の編集</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">更新</button>
+  </form>
+  <p><a href="{% url 'article_detail' article.pk %}">戻る</a></p>
+{% endblock %}

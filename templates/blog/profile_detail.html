@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+
+  <!-- プロフィール情報 -->
+  <div class="flex items-center space-x-6 mb-6">
+    {% if profile_user.profile.avatar %}
+      <img src="{{ profile_user.profile.avatar.url }}" class="w-24 h-24 rounded-full object-cover border" alt="プロフィール画像">
+    {% else %}
+      <div class="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center text-white text-2xl font-bold">
+        ?
+      </div>
+    {% endif %}
+    <div>
+      <h2 class="text-2xl font-bold text-gray-800">
+        {{ profile_user.profile.display_name|default:profile_user.username }}
+      </h2>
+      <p class="text-gray-500">@{{ profile_user.username }}</p>
+      <p class="mt-2 text-gray-700 whitespace-pre-line text-sm">
+        {{ profile_user.profile.bio|default:"自己紹介が未入力です。" }}
+      </p>
+    </div>
+  </div>
+
+  <hr class="my-6 border-gray-300">
+
+  <!-- 投稿記事一覧 -->
+  <h3 class="text-xl font-semibold text-gray-800 mb-4">投稿した記事</h3>
+
+  {% if articles %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {% for article in articles %}
+        <a href="{% url 'article_detail' article.pk %}" class="block border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+          <h4 class="text-lg font-bold text-blue-600">{{ article.title }}</h4>
+          <p class="text-sm text-gray-500 mt-1">{{ article.created_at|date:"Y年m月d日" }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-gray-600">まだ記事が投稿されていません。</p>
+  {% endif %}
+
+</div>
+{% endblock %}

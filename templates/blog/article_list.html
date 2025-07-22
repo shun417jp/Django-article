@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h1>記事一覧</h1>
+  <div class="row">
+    {% for article in articles %}
+    <div class="col-md-4 mb-3">
+      <div class="card h-100">
+        {% if article.eyecatch %}
+        <img src="{{ article.eyecatch.url }}" class="card-img-top" alt="アイキャッチ">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ article.title }}</h5>
+          <div class="text-sm text-gray-500 mb-2">
+    投稿者: <span class="font-medium text-gray-700">{{ article.author.username }}</span>
+  </div>
+          <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">続きを読む</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p>記事がありません。</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
