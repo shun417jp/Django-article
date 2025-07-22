@@ -11,7 +11,7 @@ urlpatterns = [
     path('article/create/', article_create, name='article_create'),
     path('article/<int:pk>/', views.article_detail, name='article_detail'),
     path('article/<int:pk>/edit/', views.article_edit, name='article_edit'),  # ←追加
-    path('article/<int:pk>/delete',views.article_delete, name='article_delete'),
+    path('article/<int:pk>/delete/',views.article_delete, name='article_delete'),
     path('signup/', views.signup, name='signup'),
     path('logout/', auth_views.LogoutView.as_view(next_page='article_list'), name='logout'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),

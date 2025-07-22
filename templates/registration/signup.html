@@ -2,10 +2,30 @@
 {% block title %}新規登録{% endblock %}
 
 {% block content %}
-<h1>新規登録</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-success">登録する</button>
-</form>
+<div class="max-w-md mx-auto mt-10 p-6 bg-white border rounded-lg shadow-md">
+  <h1 class="text-2xl font-semibold mb-6 text-center text-green-600">新規登録</h1>
+
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">{{ field.label_tag }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <p class="text-red-500 text-sm">{{ field.errors.0 }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition">
+      登録する
+    </button>
+  </form>
+
+  <p class="text-center text-sm text-gray-600 mt-6">
+    すでにアカウントをお持ちですか？
+    <a href="{% url 'login' %}" class="text-blue-500 hover:underline">ログインはこちら</a>
+  </p>
+</div>
 {% endblock %}

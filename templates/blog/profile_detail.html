@@ -5,7 +5,7 @@
 <div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
 
   <!-- プロフィール情報 -->
-  <div class="flex items-center space-x-6 mb-6">
+  <div class="flex items-center space-x-6 mb-6 relative">
     {% if profile_user.profile.avatar %}
       <img src="{{ profile_user.profile.avatar.url }}" class="w-24 h-24 rounded-full object-cover border" alt="プロフィール画像">
     {% else %}
@@ -13,7 +13,7 @@
         ?
       </div>
     {% endif %}
-    <div>
+    <div class="flex-1">
       <h2 class="text-2xl font-bold text-gray-800">
         {{ profile_user.profile.display_name|default:profile_user.username }}
       </h2>
@@ -22,6 +22,14 @@
         {{ profile_user.profile.bio|default:"自己紹介が未入力です。" }}
       </p>
     </div>
+
+    {% if request.user == profile_user %}
+      <div class="absolute top-0 right-0">
+        <a href="{% url 'edit_profile' %}" class="inline-block px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded transition">
+          プロフィール編集
+        </a>
+      </div>
+    {% endif %}
   </div>
 
   <hr class="my-6 border-gray-300">

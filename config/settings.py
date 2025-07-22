@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'blog',
     'accounts',
     'widget_tweaks',
+    'crispy_forms',
+    'crispy_bootstrap5',  # 追加
 ]
 
 MIDDLEWARE = [
@@ -126,6 +128,8 @@ STATICFILES_DIRS = [
 LOGIN_REDIRECT_URL = 'article_list'  # URL名で指定
 LOGOUT_REDIRECT_URL = 'article_list'
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
