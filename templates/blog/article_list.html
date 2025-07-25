@@ -7,8 +7,11 @@
     <div class="col-md-4 mb-3">
       <div class="card h-100">
         {% if article.eyecatch %}
-        <img src="{{ article.eyecatch.url }}" class="card-img-top" alt="アイキャッチ">
-        {% endif %}
+<img src="{{ article.eyecatch.url }}"
+     class="card-img-top"
+     alt="アイキャッチ"
+     style="height: 200px; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+{% endif %}
         <div class="card-body">
           <h5 class="card-title">{{ article.title }}</h5>
           <div class="text-sm text-gray-500 mb-2">

@@ -31,21 +31,23 @@ def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk, published=True)
     return render(request, 'blog/article_detail.html', {'article': article})
 
+@login_required
 def article_edit(request, pk):
-    article = get_object_or_404(Article,pk=pk)
-    
+    article = get_object_or_404(Article, pk=pk)
+
     if request.user != article.author:
         return HttpResponseForbidden("この操作は許可されていません。")
-    
+
     if request.method == 'POST':
-        form = ArticleForm(request.POST, instance=article)
+        form = ArticleForm(request.POST, request.FILES, instance=article)
         if form.is_valid():
             form.save()
             return redirect('article_detail', pk=article.pk)
-        else:
-            form = ArticleForm(instance=article)
-            
-        return render(request, 'blog/article_edit.html',{'form':form, 'article':article})
+    else:
+        form = ArticleForm(instance=article)
+
+    # GET時 または POSTでformが無効な時
+    return render(request, 'blog/article_edit.html', {'form': form, 'article': article})
     
 @login_required
 def article_delete(request, pk):

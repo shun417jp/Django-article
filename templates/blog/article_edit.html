@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
-
 {% block content %}
-  <h2>記事の編集</h2>
-  <form method="post">
+<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+  <h2 class="text-xl font-semibold mb-4">記事を編集</h2>
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">更新</button>
+    {% for field in form %}
+      <div class="mb-4">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-red-500 text-sm">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">保存</button>
   </form>
-  <p><a href="{% url 'article_detail' article.pk %}">戻る</a></p>
+</div>
 {% endblock %}
