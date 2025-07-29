@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'accounts',
     'widget_tweaks',
     'crispy_forms',
-    'crispy_bootstrap5',  # 追加
+    'crispy_bootstrap5',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +140,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Full',  # ← 一旦 Full にする
+        'extraPlugins': 'uploadimage',
+        'height': 400,
+        'width': '100%',
+        'filebrowserUploadUrl': "/ckeditor/upload/",
+        'filebrowserBrowseUrl': "/ckeditor/browse/",
+    },
+}
