@@ -21,45 +21,34 @@
 
 <body>
 <!-- ✅ ナビバー（Tailwind使用：影響範囲ここだけ） -->
-<nav class="bg-white border-b border-gray-200 shadow-sm">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-    <a href="{% url 'article_list' %}" class="text-xl font-semibold text-blue-600">MyBlog</a>
-    <ul class="flex space-x-4">
-  {% if user.is_authenticated %}
-  <li>
-      <a href="{% url 'article_create' %}" class="text-gray-700 hover:text-blue-600 font-medium">
-        記事投稿
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'profile_detail' user.username %}" class="text-gray-700 hover:text-blue-600 font-medium">
-        {{ user.username }}
-      </a>
-    </li>
-  
-    <li>
-  <form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit" class="text-gray-700 hover:text-red-500 font-medium bg-transparent border-none cursor-pointer p-0">
-      ログアウト
-    </button>
-  </form>
-</li>
-
-  {% else %}
-    <li>
-      <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium">
-        ログイン
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'signup' %}" class="text-gray-700 hover:text-blue-600 font-medium">
-        新規登録
-      </a>
-    </li>
-  {% endif %}
-</ul>
-
+<nav class="bg-white border-b border-gray-200 shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+    <a href="{% url 'article_list' %}" class="text-2xl font-bold text-blue-600 hover:text-blue-800 transition">
+      MyBlog
+    </a>
+    <ul class="flex items-center space-x-6 text-sm font-medium text-gray-700">
+      {% if user.is_authenticated %}
+        <li>
+          <a href="{% url 'article_create' %}" class="hover:text-blue-600 text-xl">記事投稿</a>
+        </li>
+        <li>
+          <a href="{% url 'profile_detail' user.username %}" class="hover:text-blue-600 text-xl">{{ user.username }}</a>
+        </li>
+        <li>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="hover:text-red-500 transition text-xl">ログアウト</button>
+          </form>
+        </li>
+      {% else %}
+        <li>
+          <a href="{% url 'login' %}" class="hover:text-blue-600">ログイン</a>
+        </li>
+        <li>
+          <a href="{% url 'signup' %}" class="hover:text-blue-600">新規登録</a>
+        </li>
+      {% endif %}
+    </ul>
   </div>
 </nav>
 

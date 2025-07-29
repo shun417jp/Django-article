@@ -1,29 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-4">
-  <h1>記事一覧</h1>
-  <div class="row">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">記事一覧</h1>
+
+  {% if articles %}
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
     {% for article in articles %}
-    <div class="col-md-4 mb-3">
-      <div class="card h-100">
-        {% if article.eyecatch %}
-<img src="{{ article.eyecatch.url }}"
-     class="card-img-top"
-     alt="アイキャッチ"
-     style="height: 200px; width: 100%; object-fit: contain; background-color: #f8f9fa;">
-{% endif %}
-        <div class="card-body">
-          <h5 class="card-title">{{ article.title }}</h5>
-          <div class="text-sm text-gray-500 mb-2">
-    投稿者: <span class="font-medium text-gray-700">{{ article.author.username }}</span>
-  </div>
-          <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">続きを読む</a>
-        </div>
+    <div class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition duration-200 overflow-hidden">
+      {% if article.eyecatch %}
+      <img src="{{ article.eyecatch.url }}" alt="アイキャッチ" class="w-full h-48 object-contain bg-gray-50">
+      {% endif %}
+      <div class="p-5">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ article.title }}</h2>
+        <p class="text-sm text-gray-500 mb-3">投稿者: {{ article.author.username }}</p>
+        <a href="{% url 'article_detail' article.pk %}" class="inline-block mt-auto text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded">
+          記事を読む
+        </a>
       </div>
     </div>
-    {% empty %}
-    <p>記事がありません。</p>
     {% endfor %}
   </div>
+  {% else %}
+    <p class="text-gray-600">記事がありません。</p>
+  {% endif %}
 </div>
 {% endblock %}
