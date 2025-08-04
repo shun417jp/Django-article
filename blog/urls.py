@@ -18,6 +18,7 @@ urlpatterns = [
     path('profile/create/', profile_create, name='profile_create'),
     path('user/<str:username>/', views.profile_detail, name='profile_detail'),
     path('user/<str:username>/articles/',views.user_article_list,name='user_Article_list'),
+     path('article/<int:article_id>/like/', views.toggle_like, name='toggle_like'),
 
 ]
 if settings.DEBUG:

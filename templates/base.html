@@ -1,7 +1,6 @@
 {% load static %}
 {% load widget_tweaks %}
 
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -15,37 +14,55 @@
   <!-- Tailwind（必要最小限のデザイン修正用に読み込み） -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Tailwind パステルカラー定義 -->
+    <script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          pastelBlue: '#A3D5FF',
+          pastelBlueDark: '#78BFE7',
+          pastelGray: '#F6F8FB',
+          pastelText: '#4A5568',
+          pastelPrimary: '#A3D5FF',
+          pastelPrimaryHover: '#91C8F0'
+        }
+      }
+    }
+  }
+</script>
+
   <!-- 任意：自作CSS -->
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
 </head>
 
-<body>
-<!-- ✅ ナビバー（Tailwind使用：影響範囲ここだけ） -->
+<body class="bg-[#E0F7FF] text-pastelText">
+<!-- ✅ ナビバー（色のみ変更） -->
 <nav class="bg-white border-b border-gray-200 shadow-md sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-    <a href="{% url 'article_list' %}" class="text-2xl font-bold text-blue-600 hover:text-blue-800 transition">
+    <a href="{% url 'article_list' %}" class="text-2xl font-bold text-pastelBlue hover:text-pastelBlueDark transition">
       MyBlog
     </a>
-    <ul class="flex items-center space-x-6 text-sm font-medium text-gray-700">
+    <ul class="flex items-center space-x-6 text-sm font-medium">
       {% if user.is_authenticated %}
         <li>
-          <a href="{% url 'article_create' %}" class="hover:text-blue-600 text-xl">記事投稿</a>
+          <a href="{% url 'article_create' %}" class="hover:text-pastelBlueDark text-xl">記事投稿</a>
         </li>
         <li>
-          <a href="{% url 'profile_detail' user.username %}" class="hover:text-blue-600 text-xl">{{ user.username }}</a>
+          <a href="{% url 'profile_detail' user.username %}" class="hover:text-pastelBlueDark text-xl">{{ user.username }}</a>
         </li>
         <li>
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
-            <button type="submit" class="hover:text-red-500 transition text-xl">ログアウト</button>
+            <button type="submit" class="hover:text-red-400 transition text-xl">ログアウト</button>
           </form>
         </li>
       {% else %}
         <li>
-          <a href="{% url 'login' %}" class="hover:text-blue-600">ログイン</a>
+          <a href="{% url 'login' %}" class="hover:text-pastelBlue">ログイン</a>
         </li>
         <li>
-          <a href="{% url 'signup' %}" class="hover:text-blue-600">新規登録</a>
+          <a href="{% url 'signup' %}" class="hover:text-pastelBlue">新規登録</a>
         </li>
       {% endif %}
     </ul>
@@ -63,6 +80,6 @@
 {% if form.media %}
   {{ form.media }}
 {% endif %}
-
+{% block extra_js  %}{% endblock %}
 </body>
 </html>

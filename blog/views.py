@@ -8,6 +8,7 @@ from .models import Article
 from .forms import ArticleForm
 from .forms import SignUpForm
 from .forms import ProfileForm
+from django.http import JsonResponse
 
 @login_required
 def article_create(request):
@@ -24,11 +25,25 @@ def article_create(request):
 
 
 def article_list(request):
-    articles = Article.objects.filter(published=True).order_by('-created_at')
-    return render(request, 'blog/article_list.html', {'articles': articles})
+    articles = Article.objects.all().select_related('author')
+    user = request.user
+    for article in articles:
+        # ユーザーが認証済みなら、いいね済みか判定
+        article.liked_by_user = False
+        if user.is_authenticated:
+            article.liked_by_user = article.likes.filter(id=user.id).exists()
+    context = {
+        'articles': articles,
+    }
+    return render(request, 'blog/article_list.html', context)
 
+# filepath: c:\Users\tomak\Desktop\Django\kiji\blog\views.py
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk, published=True)
+    article.likes_count = article.likes.count()
+    article.liked_by_user = False
+    if request.user.is_authenticated:
+        article.liked_by_user = article.likes.filter(id=request.user.id).exists()
     return render(request, 'blog/article_detail.html', {'article': article})
 
 @login_required
@@ -99,3 +114,21 @@ def user_article_list(request,username):
     user = get_object_or_404(User,username=username)
     article = Article.objects.filter(author=user, punlished=True).order_by('-created_at')
     return render(request,'blog/user_article_list.html',{'profile_user':user,'article':article})
+
+from django.http import JsonResponse
+
+@login_required
+def toggle_like(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+    like_obj = article.likes.filter(user=request.user).first()
+    if like_obj:
+        like_obj.delete()
+        liked = False
+    else:
+        article.likes.create(user=request.user)
+        liked = True
+
+    # Ajax判定（Django4以降）
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'liked': liked, 'likes_count': article.likes.count()})
+    return redirect('article_detail', pk=article_id)

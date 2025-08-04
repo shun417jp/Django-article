@@ -6,16 +6,42 @@
   {% if articles %}
   <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
     {% for article in articles %}
-    <div class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition duration-200 overflow-hidden">
+    <div class="bg-[#F4FBFF] border border-gray-200 rounded-xl shadow hover:shadow-lg transition duration-200 overflow-hidden flex flex-col">
       {% if article.eyecatch %}
       <img src="{{ article.eyecatch.url }}" alt="アイキャッチ" class="w-full h-48 object-contain bg-gray-50">
       {% endif %}
-      <div class="p-5">
+      <div class="p-5 flex flex-col flex-grow">
         <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ article.title }}</h2>
         <p class="text-sm text-gray-500 mb-3">投稿者: {{ article.author.username }}</p>
-        <a href="{% url 'article_detail' article.pk %}" class="inline-block mt-auto text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded">
-          記事を読む
-        </a>
+
+        <div class="mt-auto flex items-center justify-between">
+          <a href="{% url 'article_detail' article.pk %}" class="inline-block text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded">
+            記事を読む
+          </a>
+
+          {% if user.is_authenticated %}
+          <form action="{% url 'toggle_like' article.id %}" method="post" class="inline like-form" data-article-id="{{ article.id }}">
+            {% csrf_token %}
+            <button type="submit" class="like-btn text-sm font-semibold px-3 py-1 rounded
+              {% if article.liked_by_user %}
+                bg-red-500 text-white hover:bg-red-600
+              {% else %}
+                bg-gray-200 text-gray-700 hover:bg-gray-300
+              {% endif %}
+            ">
+              {% if article.liked_by_user %}
+                ❤️ いいね
+              {% else %}
+                🤍 いいね
+              {% endif %}
+            </button>
+          </form>
+          {% else %}
+            <span class="text-gray-500 text-sm">ログインするといいねできます</span>
+          {% endif %}
+
+          <span class="ml-2 text-sm text-gray-600" id="likes-count-{{ article.id }}">{{ article.likes_count }}</span>
+        </div>
       </div>
     </div>
     {% endfor %}
@@ -24,4 +50,47 @@
     <p class="text-gray-600">記事がありません。</p>
   {% endif %}
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.like-form').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const articleId = form.getAttribute('data-article-id');
+      const url = form.getAttribute('action');
+      const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrftoken,
+          'x-requested-with': 'XMLHttpRequest',
+        },
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        const btn = form.querySelector('.like-btn');
+        if (data.liked) {
+          btn.textContent = '❤️ いいね';
+          btn.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+          btn.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600');
+        } else {
+          btn.textContent = '🤍 いいね';
+          btn.classList.remove('bg-red-500', 'text-white', 'hover:bg-red-600');
+          btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+        }
+        document.getElementById('likes-count-' + articleId).textContent = data.likes_count;
+      })
+      .catch(error => {
+        alert('通信エラーが発生しました。再度お試しください。');
+        console.error('Fetch error:', error);
+      });
+    });
+  });
+});
+</script>
 {% endblock %}

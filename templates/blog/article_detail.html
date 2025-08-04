@@ -15,10 +15,33 @@
   </div>
 
   <!-- ✅ 本文（読みやすさ強化） -->
- <div class="prose prose-slate max-w-none leading-relaxed text-gray-800 mb-6">
-  {{ article.content|safe }}
-</div>
+  <div class="prose prose-slate max-w-none leading-relaxed text-gray-800 mb-6">
+    {{ article.content|safe }}
+  </div>
 
+  <div class="flex items-center space-x-4 mb-4">
+    {% if user.is_authenticated %}
+      <form action="{% url 'toggle_like' article.id %}" method="post" class="inline like-form" data-article-id="{{ article.id }}">
+        {% csrf_token %}
+        <button type="submit" class="like-btn text-sm font-semibold px-3 py-1 rounded
+          {% if article.liked_by_user %}
+            bg-red-500 text-white hover:bg-red-600
+          {% else %}
+            bg-gray-200 text-gray-700 hover:bg-gray-300
+          {% endif %}
+        ">
+          {% if article.liked_by_user %}
+            ❤️ いいね
+          {% else %}
+            🤍 いいね
+          {% endif %}
+        </button>
+      </form>
+    {% else %}
+      <span class="text-gray-500 text-sm">ログインするといいねできます</span>
+    {% endif %}
+    <span class="ml-2 text-sm text-gray-600" id="likes-count-{{ article.id }}">{{ article.likes_count }}</span>
+  </div>
 
   <div class="flex items-center space-x-4">
     {% if request.user == article.author %}
@@ -30,4 +53,50 @@
     </a>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.like-form').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const articleId = form.getAttribute('data-article-id');
+      const url = form.getAttribute('action');
+      const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrftoken,
+          'x-requested-with': 'XMLHttpRequest',
+        },
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        // ボタン表示の更新
+        const btn = form.querySelector('.like-btn');
+        if (data.liked) {
+          btn.textContent = '❤️ いいね';
+          btn.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+          btn.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600');
+        } else {
+          btn.textContent = '🤍 いいね';
+          btn.classList.remove('bg-red-500', 'text-white', 'hover:bg-red-600');
+          btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+        }
+        // いいね数の更新
+        document.getElementById('likes-count-' + articleId).textContent = data.likes_count;
+      })
+      .catch(error => {
+        alert('通信エラーが発生しました。再度お試しください。');
+        console.error('Fetch error:', error);
+      });
+    });
+  });
+});
+</script>
 {% endblock %}
