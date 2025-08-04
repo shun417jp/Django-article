@@ -1,0 +1,9 @@
+Django>=4.2,<5.0
+Pillow
+django-debug-toolbar
+django-allauth
+pytest
+pytest-django
+dj-database-url
+python-decouple
+whitenoise
