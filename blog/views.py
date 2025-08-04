@@ -120,15 +120,15 @@ from django.http import JsonResponse
 @login_required
 def toggle_like(request, article_id):
     article = get_object_or_404(Article, pk=article_id)
-    like_obj = article.likes.filter(user=request.user).first()
-    if like_obj:
-        like_obj.delete()
+    user = request.user
+
+    if user in article.likes.all():
+        article.likes.remove(user)
         liked = False
     else:
-        article.likes.create(user=request.user)
+        article.likes.add(user)
         liked = True
 
-    # Ajax判定（Django4以降）
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'liked': liked, 'likes_count': article.likes.count()})
     return redirect('article_detail', pk=article_id)
