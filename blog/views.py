@@ -28,10 +28,11 @@ def article_list(request):
     articles = Article.objects.all().select_related('author')
     user = request.user
     for article in articles:
-        # ユーザーが認証済みなら、いいね済みか判定
-        article.liked_by_user = False
+        article.likes_count = article.likes.count()
         if user.is_authenticated:
             article.liked_by_user = article.likes.filter(id=user.id).exists()
+        else:
+            article.liked_by_user = False
     context = {
         'articles': articles,
     }
