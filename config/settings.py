@@ -18,7 +18,8 @@ if os.path.exists(env_path):
 # --- 環境変数を取得 ---
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='unsafe-default-key')  # ★ デフォルトを設定（開発時のみOK）
 DEBUG = env.bool('DJANGO_DEBUG', default=False)
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
+
 
 
 # --- アプリケーション定義 ---
