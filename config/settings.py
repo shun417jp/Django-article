@@ -1,19 +1,25 @@
-from pathlib import Path
 import os
+from pathlib import Path
 import environ
 
 # --- 基本設定 ---
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 環境変数を読み込む
+# --- 環境変数の読み込み ---
 env = environ.Env(
-    DEBUG=(bool, False)
+    DJANGO_DEBUG=(bool, False),  # ★ キー名に "DJANGO_" をつける（統一性と衝突回避）
 )
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = env('DJANGO_SECRET_KEY')
-DEBUG = env('DJANGO_DEBUG')
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
+# ★ .env ファイルのパスを確認してから読み込み
+env_path = os.path.join(BASE_DIR, '.env')
+if os.path.exists(env_path):
+    environ.Env.read_env(env_path)
+
+# --- 環境変数を取得 ---
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='unsafe-default-key')  # ★ デフォルトを設定（開発時のみOK）
+DEBUG = env.bool('DJANGO_DEBUG', default=False)
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
+
 
 # --- アプリケーション定義 ---
 INSTALLED_APPS = [
