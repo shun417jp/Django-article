@@ -118,10 +118,12 @@ def user_article_list(request,username):
 
 from django.http import JsonResponse
 
+from django.contrib.auth import get_user_model
+
 @login_required
 def toggle_like(request, article_id):
     article = get_object_or_404(Article, pk=article_id)
-    user = request.user
+    user = get_user_model().objects.get(pk=request.user.pk)  # ← ここを修正！
 
     if user in article.likes.all():
         article.likes.remove(user)

@@ -12,11 +12,14 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # 自動ログイン
-            return redirect('profile_create')  # プロフィール作成へ
+            # ユーザー作成後にProfileも作成
+            Profile.objects.create(user=user)
+            login(request, user)
+            return redirect('edit_profile')
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+
 
 
 @login_required

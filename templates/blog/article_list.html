@@ -64,9 +64,10 @@ document.addEventListener('DOMContentLoaded', function() {
       fetch(url, {
         method: 'POST',
         headers: {
-          'X-CSRFToken': csrftoken,
-          'x-requested-with': 'XMLHttpRequest',
-        },
+  'X-CSRFToken': csrftoken,
+  'X-Requested-With': 'XMLHttpRequest',
+},
+
       })
       .then(response => {
         if (!response.ok) throw new Error('Network response was not ok');
